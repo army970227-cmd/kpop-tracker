@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>銷量監控</title>
+<style>
+  body { font-family: sans-serif; background: #111; color: #eee; padding: 20px; }
+  .box { background: #222; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+  .num { font-size: 48px; color: #4ade80; font-weight: bold; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h2>目前銷量</h2>
+    <div class="num" id="sales">載入中...</div>
+    <p id="time" style="color: #888;">-</p>
+  </div>
+<script>
+async function load() {
+  try {
+    const res = await fetch('allmyday.csv?t=' + Date.now());
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    if (lines.length < 2) return;
+    const last = lines[lines.length - 1].split(',');
+    document.getElementById('time').innerText = '更新時間：' + last[0];
+    document.getElementById('sales').innerText = last[1];
+  } catch (e) {
+    console.error(e);
+  }
+}
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>
